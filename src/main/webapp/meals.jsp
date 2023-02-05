@@ -20,17 +20,9 @@
     </tr>
     <c:forEach items="${meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-        <c:if test="${meal.excess}">
-            <tr style="color: red">
-                <td>${meal.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
-                <td>${meal.description}</td>
-                <td>${meal.calories}</td>
-                <td><a href="">Update</a></td>
-                <td><a href="">Delete</a></td>
-            </tr>
-        </c:if>
-        <tr style="color: green">
-            <td>${meal.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
+        <jsp:useBean id="DataParse" class="ru.javawebinar.topjava.util.TimeUtil"/>
+        <tr ${meal.excess ? 'style="color: red"' : 'style="color: green"'}>
+            <td>${DataParse.parse(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
             <td><a href="">Update</a></td>

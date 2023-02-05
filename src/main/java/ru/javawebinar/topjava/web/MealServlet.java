@@ -20,10 +20,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javawebinar.topjava.dao.mealDao.MEALS;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private static  List<MealTo> mealTos = MealsUtil.createMealTo();
+    private static  List<MealTo> mealTos = MealsUtil.createMealTo(MEALS, MealsUtil.CALORIES_PER_DAY);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
