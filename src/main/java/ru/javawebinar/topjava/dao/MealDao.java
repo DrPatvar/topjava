@@ -7,11 +7,11 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-public class mealDao {
-    public static final List<Meal> MEALS;
+public class MealDao {
+    public static List<Meal> meals;
 
     static {
-        MEALS = Arrays.asList(
+        meals = Arrays.asList(
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
