@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.util.Counter;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.TimeUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -38,12 +37,14 @@ public class MealServlet extends HttpServlet {
         String calories = request.getParameter("calories");
         String localDateTime = request.getParameter("datetime");
         Meal meal;
-        if (idStr == null || idStr.length() != 0) {
-           meal = new Meal(Counter.COUNT.getAndIncrement(), LocalDateTime.now(),description, Integer.parseInt(calories));
-           mealDao.save(meal);
+        if (idStr == null || idStr.length() == 0) {
+            meal = new Meal(TimeUtil.dateParse(localDateTime), description, Integer.parseInt(calories));
+            mealDao.save(meal);
+        } else {
+            meal = new Meal(Integer.parseInt(idStr), TimeUtil.dateParse(localDateTime), description, Integer.parseInt(calories));
+            mealDao.update(meal);
         }
         response.sendRedirect("meals");
-
     }
 
     @Override

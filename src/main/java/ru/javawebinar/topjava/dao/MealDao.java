@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.mealCrud.MealCrud;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.Counter;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -11,8 +12,6 @@ import java.util.Map;
 public class MealDao implements MealCrud {
 
     public static Map<Integer, Meal> meals;
-
-
 
     static {
         meals = new HashMap<>();
@@ -30,12 +29,14 @@ public class MealDao implements MealCrud {
 
     @Override
     public void update(Meal meal) {
-        meals.put(meal.getId(), meal);
+        meals.replace(meal.getId(), meal);
     }
 
     @Override
     public void save(Meal meal) {
-    meals.put(meal.getId(), meal);
+        int id = Counter.COUNT.getAndIncrement();
+        meal.setId(id);
+        meals.put(id, meal);
     }
 
     public void delete(int id) {
