@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,17 +16,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javawebinar.topjava.dao.MealDao.meals;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    MealDao mealDao = new MealDao();
+    private MealDao mealDao = new MealDao();
 
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,10 +31,10 @@ public class MealServlet extends HttpServlet {
         String localDateTime = request.getParameter("datetime");
         Meal meal;
         if (idStr == null || idStr.length() == 0) {
-            meal = new Meal(TimeUtil.dateParse(localDateTime), description, Integer.parseInt(calories));
-            mealDao.save(meal);
+            meal = new Meal(TimeUtil.parseDateTime(localDateTime), description, Integer.parseInt(calories));
+            mealDao.create(meal);
         } else {
-            meal = new Meal(Integer.parseInt(idStr), TimeUtil.dateParse(localDateTime), description, Integer.parseInt(calories));
+            meal = new Meal(Integer.parseInt(idStr), TimeUtil.parseDateTime(localDateTime), description, Integer.parseInt(calories));
             mealDao.update(meal);
         }
         response.sendRedirect("meals");
@@ -50,31 +43,41 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
-        List<MealTo> mealTos = MealsUtil.filteredByStreams(meals.values(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
-        String idStr = request.getParameter("id");
+        List<MealTo> mealTos = MealsUtil.filteredByStreams(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
         String action = request.getParameter("action");
         if (action == null) {
             request.setAttribute("meals", mealTos);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
             return;
         }
-        if (idStr != null || idStr.length() != 0) {
-            Integer id = Integer.parseInt(idStr);
+            /*if (!idStr.isEmpty() || idStr!=null){
+                Integer id = Integer.parseInt(idStr);
+            }*/
             Meal meal;
             switch (action) {
                 case "delete":
+                    String idStr = request.getParameter("id");
+                    Integer id= Integer.parseInt(idStr);
+                    log.debug("delete meal");
                     mealDao.delete(id);
                     response.sendRedirect("meals");
                     return;
+                case "add":
+                    log.debug("add new meal");
+                    request.getRequestDispatcher("editMeals.jsp").forward(request, response);
+                    break;
                 case "update":
-                    meal = meals.get(id);
+                    String idStr1 = request.getParameter("id");
+                    Integer id1 = Integer.parseInt(idStr1);
+                    log.debug("update meal");
+                    meal = mealDao.get(id1);
                     request.setAttribute("meal", meal);
                     request.getRequestDispatcher("editMeals.jsp").forward(request, response);
                     break;
                 default:
-                    throw new IllegalStateException("Unexpected value: " + action);
+                    log.debug("no action redirect meals");
+                    response.sendRedirect("meals");
             }
-        }
         request.setAttribute("meal", mealTos);
         request.getRequestDispatcher("meals.jsp").forward(request, response);
     }

@@ -7,11 +7,11 @@ import java.time.format.DateTimeFormatter;
 public class TimeUtil {
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public String parse(LocalDateTime dateTime) {
+    public String parse (LocalDateTime dateTime){
         return dateTime.format(dateTimeFormatter);
     }
 
-    public static LocalDateTime dateParse (String date){
+    public static LocalDateTime parseDateTime(String date){
         return LocalDateTime.parse(date);
     }
 

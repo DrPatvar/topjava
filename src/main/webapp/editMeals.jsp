@@ -14,7 +14,7 @@
     <table>
         <tr>
             <th><label>DateTime</label></th>
-            <th><input type="datetime-local" name="datetime" value="${meal.dateTime}" placeholder="${meal.date}"
+            <th><input type="datetime-local" name="datetime" value="${meal.dateTime}"
                        required></th>
         </tr>
         <tr>
