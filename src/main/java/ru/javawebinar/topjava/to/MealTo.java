@@ -16,7 +16,7 @@ public class MealTo {
 
     private final boolean excess;
 
-    public MealTo(Integer id, Integer userId, LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public MealTo(Integer id,  LocalDateTime dateTime, String description, int calories, boolean excess, Integer userId) {
         this.id = id;
         this.userId = userId;
         this.dateTime = dateTime;
@@ -52,7 +52,8 @@ public class MealTo {
     @Override
     public String toString() {
         return "MealTo{" +
-                "id=" + id +
+                "userId=" + userId +
+                ", id=" + id +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +

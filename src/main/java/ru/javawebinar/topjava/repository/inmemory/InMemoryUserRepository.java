@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,9 +42,8 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        List<User> userList = (List<User>) repository.values();
-        Collections.sort(userList,
-                Comparator.comparing(User::getName).thenComparing(User::getEmail));
+        List<User> userList = new ArrayList<>(repository.values());
+        userList.stream().sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail));
         return userList;
     }
 
@@ -56,7 +52,7 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("getByEmail {}", email);
         return repository.values()
                 .stream()
-                .filter(user -> user.getEmail().equals(email))
+                .filter(user -> user.getEmail().equalsIgnoreCase(email))
                 .findAny()
                 .orElse(null);
     }

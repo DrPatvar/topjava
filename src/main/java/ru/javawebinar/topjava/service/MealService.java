@@ -3,9 +3,10 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class MealService {
@@ -16,26 +17,24 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(int userId, Meal meal) {
-        return repository.save(userId, meal);
+    public Meal create(Meal meal) {
+        return repository.save(meal);
     }
 
     public void delete(int userId, int id) {
-        repository.delete(userId, id);
+        checkNotFoundWithId(repository.delete(userId, id), id);
     }
 
-    public Meal get(int userId, int id) {
-        if (userId == repository.get(id).getUserId()) {
-            return repository.get(id);
-        } else throw new NotFoundException("not meal user");
+    public Meal get(int id) {
+        return checkNotFoundWithId(repository.get(id), id);
     }
 
     public List<Meal> getAll(int userId) {
-        return (List<Meal>) repository.getAll(userId);
+        return checkNotFoundWithId(repository.getAll(userId), userId);
     }
 
-    public void update(int userId, Meal meal) {
-        repository.save(userId, meal);
+    public void update(Meal meal) {
+        checkNotFoundWithId(repository.save(meal), meal.getId());
     }
 
 }
