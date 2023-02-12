@@ -41,18 +41,21 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal get(int id) {
+    public Meal get(int userId, int id) {
         return repository.get(id);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return new ArrayList<>(repository.values())
+        List<Meal> mealList = repository.values()
                 .stream()
                 .filter(m -> m.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        //return new ArrayList<>(Collections.singletonList(new Meal(0, LocalDateTime.now(), "", 0, 0)));
+        if (mealList.isEmpty()) {
+            return new ArrayList<Meal>();
+        }
+        return mealList;
     }
 }
 
