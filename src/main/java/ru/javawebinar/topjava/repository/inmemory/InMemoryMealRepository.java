@@ -5,7 +5,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +18,17 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(this::save);
+        MealsUtil.meals.forEach(meal -> save(meal.getUserId(), meal));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(int userId, Meal meal) {
         if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
-            repository.put(meal.getId(), meal);
-            return meal;
+            if (userId == meal.getUserId()) {
+                meal.setId(counter.incrementAndGet());
+                repository.put(meal.getId(), meal);
+                return meal;
+            }
         }
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
@@ -42,19 +43,20 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int userId, int id) {
-        return repository.get(id);
+        return repository.values()
+                .stream()
+                .filter(meal -> meal.getUserId() == userId & meal.getId() == id)
+                .findFirst().get();
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> mealList = repository.values()
+        List<Meal> mealList;
+        mealList = repository.values()
                 .stream()
                 .filter(m -> m.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        if (mealList.isEmpty()) {
-            return new ArrayList<Meal>();
-        }
         return mealList;
     }
 }
