@@ -27,6 +27,10 @@ public class MealService {
         checkNotFoundWithId(repository.delete(userId, id), id);
     }
 
+    public void update(int userId, Meal meal) {
+        checkNotFoundWithId(repository.save(userId, meal), meal.getId());
+    }
+
     public Meal get(int userId, int id) {
         return checkNotFoundWithId(repository.get(userId, id), id);
     }
@@ -35,7 +39,5 @@ public class MealService {
         return MealsUtil.getTos(repository.getAll(userId), CaloriesPerDay);
     }
 
-    public void update(int userId, Meal meal) {
-        checkNotFoundWithId(repository.save(userId, meal), meal.getId());
-    }
+
 }

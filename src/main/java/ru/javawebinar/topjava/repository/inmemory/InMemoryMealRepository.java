@@ -24,11 +24,9 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal save(int userId, Meal meal) {
         if (meal.isNew()) {
-            if (userId == meal.getUserId()) {
                 meal.setId(counter.incrementAndGet());
                 repository.put(meal.getId(), meal);
                 return meal;
-            }
         }
         return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
@@ -43,21 +41,20 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int userId, int id) {
-        return repository.values()
-                .stream()
-                .filter(meal -> meal.getUserId() == userId & meal.getId() == id)
-                .findFirst().get();
+        Meal meal = repository.get(id);
+        if (meal.getUserId() == userId) {
+            return meal;
+        }
+        return null;
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> mealList;
-        mealList = repository.values()
+        return repository.values()
                 .stream()
                 .filter(m -> m.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        return mealList;
     }
 }
 
