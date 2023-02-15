@@ -18,9 +18,34 @@
 </head>
 <body>
 <section>
+
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <h3>Сортировка еды</h3>
+    <form>
+        <input type="hidden" name="action" value="filter"/>
+        <table>
+            <thead>
+            <tr>
+                <th><label>От даты(включая)</label></th>
+                <th><label>До даты(включая)</label></th>
+                <th><label>От времени(включая)</label></th>
+                <th><label>До времени(исключая)</label></th>
+            </tr>
+            <tr>
+                <th><input type="date" name="startDate"></th>
+                <th><input type="date" name="endDate"></th>
+                <th><input type="time" name="startTime"></th>
+                <th><input type="time" name="endTime"></th>
+            </tr>
+            </thead>
+        </table>
+        <br>
+        <button type="submit">Отфильтровать</button>
+        <button onclick="window.history.back()" type="button">Cancel</button>
+    </form>
+    <br><br>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
