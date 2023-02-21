@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.GUEST_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
@@ -35,7 +36,7 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal meal = service.get(ID, USER_ID);
+        Meal meal = service.get(ID_MEAL1, USER_ID);
         assertThat(USER_MEAL1).isEqualTo(meal);
     }
 
@@ -45,14 +46,14 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getNotFoundUser() {
-        Assert.assertThrows(NotFoundException.class, () -> service.get(ID, 1));
+    public void getForUserWithNoMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> service.get(ID_MEAL1, GUEST_ID));
     }
 
     @Test
     public void delete() {
-        service.delete(ID, USER_ID);
-        Assert.assertThrows(NotFoundException.class, () -> service.get(ID, USER_ID));
+        service.delete(ID_MEAL1, USER_ID);
+        Assert.assertThrows(NotFoundException.class, () -> service.get(ID_MEAL1, USER_ID));
     }
 
     @Test
@@ -61,8 +62,8 @@ public class MealServiceTest {
     }
 
     @Test
-    public void deleteNotFoundUser() {
-        Assert.assertThrows(NotFoundException.class, () -> service.delete(ID, 1));
+    public void deleteForUserWithNoMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> service.delete(ID_MEAL1, GUEST_ID));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(101, USER_ID), getUpdated());
+        assertMatch(service.get(ID_MEAL2, USER_ID), getUpdated());
     }
 
     @Test
