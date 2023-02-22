@@ -16,8 +16,6 @@ import java.util.List;
 
 @Repository
 @ComponentScan(basePackages = "repository")
-/*@EnableJpaRepositories(basePackages = "repository-package")
-@EntityScan(basePackages = "entities-package")*/
 public class JdbcMealRepository implements MealRepository {
 
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
@@ -49,7 +47,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET  datetime=:dateTime, description=:description, calories=:calories WHERE id=:id AND user_id=:userId", map) == 0) {
+                "UPDATE meals SET  date_time=:dateTime, description=:description, calories=:calories WHERE id=:id AND user_id=:userId", map) == 0) {
             return null;
         }
         return meal;
@@ -62,17 +60,17 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id =? AND meals.user_id =?", ROW_MAPPER, id, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id =? AND user_id =?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY  datetime DESC", ROW_MAPPER, userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY  date_time DESC", ROW_MAPPER, userId);
     }
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query("SELECT * FROM meals " +
-                "WHERE meals.user_id =? AND meals.datetime >= ? AND meals.datetime< ?", ROW_MAPPER, userId, startDateTime, endDateTime);
+                "WHERE meals.user_id =? AND meals.date_time >= ? AND meals.date_time< ?", ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }

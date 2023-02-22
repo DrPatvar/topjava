@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,8 +37,8 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal meal = service.get(ID_MEAL1, USER_ID);
-        assertThat(USER_MEAL1).isEqualTo(meal);
+        Meal meal = service.get(ID, USER_ID);
+        assertThat(userMeal1).isEqualTo(meal);
     }
 
     @Test
@@ -47,13 +48,13 @@ public class MealServiceTest {
 
     @Test
     public void getForUserWithNoMeal() {
-        Assert.assertThrows(NotFoundException.class, () -> service.get(ID_MEAL1, GUEST_ID));
+        Assert.assertThrows(NotFoundException.class, () -> service.get(ID, GUEST_ID));
     }
 
     @Test
     public void delete() {
-        service.delete(ID_MEAL1, USER_ID);
-        Assert.assertThrows(NotFoundException.class, () -> service.get(ID_MEAL1, USER_ID));
+        service.delete(ID, USER_ID);
+        Assert.assertThrows(NotFoundException.class, () -> service.get(ID, USER_ID));
     }
 
     @Test
@@ -63,21 +64,33 @@ public class MealServiceTest {
 
     @Test
     public void deleteForUserWithNoMeal() {
-        Assert.assertThrows(NotFoundException.class, () -> service.delete(ID_MEAL1, GUEST_ID));
+        Assert.assertThrows(NotFoundException.class, () -> service.delete(ID, GUEST_ID));
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
-        Assert.assertEquals(6, all.size());
-        assertMatch(all, USER_MEAL3, USER_MEAL2, USER_MEAL1, USER_MEAL6, USER_MEAL5, USER_MEAL4);
+        assertMatch(all, userMeal3, userMeal2, userMeal1, userMeal6, userMeal5, userMeal4);
     }
 
     @Test
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(ID_MEAL2, USER_ID), getUpdated());
+        assertMatch(service.get(100004, USER_ID), getUpdated());
+    }
+
+    @Test
+    public void updateForUserWithNoMeal() {
+        Meal updated = getUpdated();
+        Assert.assertThrows(NotFoundException.class, () -> service.update(updated, GUEST_ID));
+    }
+
+    @Test
+    public void getBetweenHalfOpen() {
+        List<Meal> mealFilter = service.getBetweenInclusive(LocalDate.of(2023, 2, 16), LocalDate.of(2023, 2, 16), USER_ID);
+        Meal userFilter = mealFilter.get(0);
+        assertMatch(userMeal4, userFilter);
     }
 
     @Test
