@@ -16,13 +16,13 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.GUEST_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/spring-app-jdbc-test.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -38,7 +38,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(ID, USER_ID);
-        assertThat(userMeal1).isEqualTo(meal);
+        assertMatch(userMeal1, meal);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(100004, USER_ID), getUpdated());
+        assertMatch(service.get(userMeal2.getId(), USER_ID), getUpdated());
     }
 
     @Test
@@ -89,8 +89,7 @@ public class MealServiceTest {
     @Test
     public void getBetweenHalfOpen() {
         List<Meal> mealFilter = service.getBetweenInclusive(LocalDate.of(2023, 2, 16), LocalDate.of(2023, 2, 16), USER_ID);
-        Meal userFilter = mealFilter.get(0);
-        assertMatch(userMeal4, userFilter);
+        assertMatch(mealFilter, userMeal4, userMeal5, userMeal6);
     }
 
     @Test

@@ -6,9 +6,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
-    public static final int ID = 100003;
+    public static final int ID = START_SEQ + 3;
     public static final int NOT_FOUND = 10;
 
     public static Meal userMeal1 = new Meal(ID, LocalDateTime.of(2023, 2, 17, 8, 30), "Breakfast", 500);
@@ -20,12 +21,12 @@ public class MealTestData {
     public static Meal adminMeal = new Meal(ID + 6, LocalDateTime.of(2023, 2, 22, 8, 15), "Breakfast", 450);
 
     public static Meal getNew() {
-        return new Meal(LocalDateTime.of(2023, 2, 18, 12, 25, 55), "Lunch", 1200);
+        return new Meal(LocalDateTime.of(2023, 2, 18, 12, 25), "Lunch", 1200);
     }
 
     public static Meal getUpdated() {
         Meal update = new Meal(userMeal2);
-        update.setDateTime(LocalDateTime.of(2023, 2, 20, 8, 25, 15));
+        update.setDateTime(LocalDateTime.of(2023, 2, 20, 8, 25));
         update.setDescription("Breakfast");
         update.setCalories(350);
         return update;
@@ -40,6 +41,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).usingRecursiveFieldByFieldElementComparator().containsAll(expected);
+        assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
     }
 }
