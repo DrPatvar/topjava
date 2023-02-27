@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava;
 
+import ru.javawebinar.topjava.model.User;
+
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +18,7 @@ public class MatcherFactory {
 
     public static class Matcher<T> {
         private final String[] fieldsToIgnore;
+
 
         private Matcher(String... fieldsToIgnore) {
             this.fieldsToIgnore = fieldsToIgnore;
