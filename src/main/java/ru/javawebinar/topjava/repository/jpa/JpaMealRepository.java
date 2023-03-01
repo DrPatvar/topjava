@@ -1,17 +1,18 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -42,15 +43,11 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-      Meal meal = null;
-       try {meal = em.createNamedQuery(Meal.GET, Meal.class)
-                   .setParameter("id", id)
-                   .setParameter("user_id", userId)
-                   .getSingleResult();
-       }catch (NoResultException e){
-           throw new NotFoundException("");
-       }
-        return meal;
+        List mealList = em.createNamedQuery(Meal.GET, Meal.class)
+                .setParameter("id", id)
+                .setParameter("user_id", userId)
+                .getResultList();
+        return (Meal) DataAccessUtils.singleResult(mealList);
     }
 
     @Override
@@ -66,6 +63,9 @@ public class JpaMealRepository implements MealRepository {
                 .setParameter("user_id", userId)
                 .setParameter("start_date", startDateTime)
                 .setParameter("end_date", endDateTime)
-                .getResultList();
+                .getResultList()
+                .stream()
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 }

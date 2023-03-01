@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava;
 
-import ru.javawebinar.topjava.model.User;
-
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.model;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -39,7 +37,6 @@ public class Meal extends AbstractBaseEntity {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @NotNull
     private User user;
 

@@ -33,11 +33,7 @@ public class MealService {
     }
 
     public List<Meal> getBetweenInclusive(@Nullable LocalDate startDate, @Nullable LocalDate endDate, int userId) {
-        return repository.getBetweenHalfOpen(atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate), userId)
-                .stream()
-                .sorted(Comparator.comparing(Meal::getDateTime)
-                        .reversed())
-                .collect(Collectors.toList());
+        return repository.getBetweenHalfOpen(atStartOfDayOrMin(startDate), atStartOfNextDayOrMax(endDate), userId);
     }
 
     public List<Meal> getAll(int userId) {
