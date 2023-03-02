@@ -24,7 +24,7 @@ public class LoggerRules {
         }
     };
 
-    public static final ExternalResource SUMMER = new ExternalResource() {
+    public static final ExternalResource SUMMARY = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
             results.setLength(0);

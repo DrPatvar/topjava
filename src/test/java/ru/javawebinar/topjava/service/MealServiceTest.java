@@ -33,7 +33,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     @ClassRule
-    public static ExternalResource summary = LoggerRules.SUMMER;
+    public static ExternalResource summary = LoggerRules.SUMMARY;
 
     @Rule
     public Stopwatch stopwatch = LoggerRules.STOPWATCH;

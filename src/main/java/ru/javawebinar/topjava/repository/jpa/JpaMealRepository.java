@@ -10,9 +10,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -43,11 +41,11 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List mealList = em.createNamedQuery(Meal.GET, Meal.class)
+        List<Meal> mealList = em.createNamedQuery(Meal.GET, Meal.class)
                 .setParameter("id", id)
                 .setParameter("user_id", userId)
                 .getResultList();
-        return (Meal) DataAccessUtils.singleResult(mealList);
+        return DataAccessUtils.singleResult(mealList);
     }
 
     @Override
@@ -63,9 +61,6 @@ public class JpaMealRepository implements MealRepository {
                 .setParameter("user_id", userId)
                 .setParameter("start_date", startDateTime)
                 .setParameter("end_date", endDateTime)
-                .getResultList()
-                .stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+                .getResultList();
     }
 }
