@@ -18,6 +18,10 @@ public class DateTimeUtil {
     private DateTimeUtil() {
     }
 
+    public static LocalDateTime dateTimeParser(String dateTime){
+        return LocalDateTime.parse(dateTime.replace("T", " "), DATE_TIME_FORMATTER);
+    }
+
     public static LocalDateTime atStartOfDayOrMin(LocalDate localDate) {
         return localDate != null ? localDate.atStartOfDay() : MIN_DATE;
     }
