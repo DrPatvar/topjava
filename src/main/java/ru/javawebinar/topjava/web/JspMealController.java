@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Controller
 @RequestMapping("/meals")
@@ -30,6 +31,20 @@ public class JspMealController {
         log.info("mealAll");
         int userId = SecurityUtil.authUserId();
         model.addAttribute("meals", MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay()));
+        return "meals";
+    }
+
+    @GetMapping("/filter")
+    public String filter(@RequestParam String startDate,
+                        @RequestParam String endDate,
+                        @RequestParam String startTime,
+                        @RequestParam String endTime,
+                        Model model){
+        log.info("filter meal date");
+        List<Meal> mealsDateFiltered = mealService.getBetweenInclusive(DateTimeUtil.parseLocalDate(startDate),
+                DateTimeUtil.parseLocalDate(endDate), SecurityUtil.authUserId());
+        model.addAttribute("meals", MealsUtil.getFilteredTos(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(),
+                DateTimeUtil.parseLocalTime(startTime),DateTimeUtil.parseLocalTime(endTime)));
         return "meals";
     }
 
