@@ -6,7 +6,7 @@
 <html>
 <head>
     <title><spring:message code="meal.title"/></title>
-    <link rel="stylesheet" href="resources/css/style.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/style.css"/>">
 </head>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
