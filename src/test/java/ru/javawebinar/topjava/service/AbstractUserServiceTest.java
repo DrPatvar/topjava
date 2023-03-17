@@ -40,7 +40,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Before
     public void setup() {
         cacheManager.getCache("users").clear();
-        if (!Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC)) {
+        if (isJpa(environment)) {
             jpaUtil.clear2ndLevelHibernateCache();
         }
     }

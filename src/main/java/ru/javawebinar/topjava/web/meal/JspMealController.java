@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +27,7 @@ public class JspMealController {
     @Autowired
     MealService mealService;
 
-    @GetMapping("")
+    @GetMapping
     public String showAll(Model model) {
         log.info("mealAll");
         int userId = SecurityUtil.authUserId();
@@ -55,15 +56,19 @@ public class JspMealController {
         return "mealForm";
     }
 
-    @PostMapping("/save")
-    public String createAndUpdate(@RequestParam(required = false) Integer id,
-                                  @RequestParam String dateTime,
-                                  @RequestParam String description,
-                                  @RequestParam int calories){
+    @PostMapping
+    public String createOrUpdate(@RequestParam(required = false) Integer id,
+                                 @RequestParam String dateTime,
+                                 @RequestParam String description,
+                                 @RequestParam int calories) {
         log.info("create meal");
-        LocalDateTime mealDateTime = DateTimeUtil.dateTimeParser(dateTime);
+        LocalDateTime mealDateTime = LocalDateTime.parse(dateTime);
         Meal meal = new Meal(id, mealDateTime, description, calories);
-        mealService.create(meal, SecurityUtil.authUserId());
+        if (id != null) {
+            mealService.update(meal, SecurityUtil.authUserId());
+        } else {
+            mealService.create(meal, SecurityUtil.authUserId());
+        }
         return "redirect:/meals";
     }
 
