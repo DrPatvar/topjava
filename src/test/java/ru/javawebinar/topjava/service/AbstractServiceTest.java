@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,7 +36,10 @@ public abstract class AbstractServiceTest {
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
-    public boolean isJpa (Environment environment){
+    @Autowired
+    protected Environment environment;
+
+    protected boolean isJpa (Environment environment){
         return  !Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC);
     }
 
