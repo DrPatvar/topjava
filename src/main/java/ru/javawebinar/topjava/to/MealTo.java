@@ -14,7 +14,6 @@ public class MealTo {
     private  boolean excess;
 
     public MealTo(){
-        super();
     }
 
     public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
