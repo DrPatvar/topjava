@@ -2,12 +2,26 @@ package ru.javawebinar.topjava.web.converter;
 
 import org.springframework.format.Formatter;
 
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class DateTimeFormatters {
+
+    public static class LocalDateTimeFormatter implements Formatter<LocalDateTime>{
+        @Override
+        public LocalDateTime parse(String text, Locale locale) throws ParseException {
+            return LocalDateTime.parse(text);
+        }
+
+        @Override
+        public String print(LocalDateTime object, Locale locale) {
+            return object.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+    }
     public static class LocalDateFormatter implements Formatter<LocalDate> {
 
         @Override

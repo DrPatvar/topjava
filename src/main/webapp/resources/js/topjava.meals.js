@@ -1,9 +1,22 @@
-const userAjaxUrl = "admin/meals/";
+const mealAjaxUrl = "mealsUI/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl
+    ajaxUrl: mealAjaxUrl
 };
+
+function filter() {
+    $.ajax({
+        url: ctx.ajaxUrl + "filter",
+        method: "get",
+        data: $("#filter").serialize()
+    }).done(function (data){ctx.datatableApi.clear().rows.add(data).draw()});
+}
+
+function clearFilter() {
+    $("#filter")[0].reset();
+    $.get(ctx.ajaxUrl, function (data){ctx.datatableApi.clear().rows.add(data).draw()});
+}
 
 // $(document).ready(function () {
 $(function () {
