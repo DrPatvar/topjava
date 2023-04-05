@@ -44,4 +44,15 @@ $(function () {
             ]
         })
     );
+    $("table.table-striped").find('input[type=checkbox]').change(function () {
+        $(this).is(':checked') ? $(this).closest('tr').css('background', 'gray')
+            :$(this).closest('tr').css('background', 'blue');
+        var enabled = $(this).is(':checked');
+        var id = $(this).closest('tr').attr('id');
+        $.ajax({
+            url: ctx.ajaxUrl + "updateEnable",
+            method: "POST",
+            data: {  id : id, enable: enabled}
+        })
+    })
 });

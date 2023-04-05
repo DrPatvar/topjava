@@ -15,7 +15,7 @@ function filter() {
 
 function clearFilter() {
     $("#filter")[0].reset();
-    $.get(ctx.ajaxUrl, function (data){ctx.datatableApi.clear().rows.add(data).draw()});
+    updateTable();
 }
 
 // $(document).ready(function () {

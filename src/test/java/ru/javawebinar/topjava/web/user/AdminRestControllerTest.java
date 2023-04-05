@@ -77,6 +77,15 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateEnable() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "updateEnable")
+                .param("id", "100000")
+                .param("enable", "false")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
