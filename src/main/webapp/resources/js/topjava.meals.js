@@ -20,25 +20,37 @@ function clearFilter() {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (date, type, row) {
+                        if (type === "display") {
+                            return date;
+                        }
+                        return date;
+                    }
                 },
                 {
-                    "data": "description"
+                    "data": "description",
                 },
                 {
-                    "data": "calories"
+                    "data": "calories",
                 },
                 {
-                    "defaultContent": "Edit",
-                    "orderable": false
+                    "defaultContent": "",
+                    "orderable": false,
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "defaultContent": "",
+                    "orderable": false,
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -46,7 +58,31 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (!data.excess) {
+                    $(row).attr("data-meal-excess", false);
+                }
+            }
         })
     );
 });
+
+
+$('#startDate').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d'
+});
+$('#endDate').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d'
+});
+$('#startTime').datetimepicker({
+    datepicker:false,
+    format: 'HH:mm'
+})
+$('#endTime').datetimepicker({
+    datepicker: false,
+    format: 'HH:mm'
+})
+
