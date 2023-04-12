@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.getErrorFieldsMsg;
+
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
@@ -36,12 +38,9 @@ public class AdminUIController extends AbstractUserController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
         if (result.hasErrors()) {
-            String errorFieldsMsg = result.getFieldErrors().stream()
-                    .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                    .collect(Collectors.joining("<br>"));
+            String errorFieldsMsg = getErrorFieldsMsg(result);
             return ResponseEntity.unprocessableEntity().body(errorFieldsMsg);
         }
         if (userTo.isNew()) {

@@ -41,13 +41,7 @@ public class DateTimeFormatters {
 
         @Override
         public LocalDateTime parse(String text, Locale locale) throws ParseException {
-            LocalDateTime dateTime = null;
-            try {
-                LocalDateTime.parse(text);
-            }catch (Exception e){
-                dateTime = LocalDateTime.parse(text, DateTimeUtil.DATE_TIME_FORMATTER);
-            }
-            return dateTime;
+            return LocalDateTime.parse(text, DateTimeUtil.DATE_TIME_FORMATTER);
         }
 
         @Override

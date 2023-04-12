@@ -37,10 +37,10 @@ $(function () {
                     }
                 },
                 {
-                    "data": "description",
+                    "data": "description"
                 },
                 {
-                    "data": "calories",
+                    "data": "calories"
                 },
                 {
                     "defaultContent": "",
@@ -66,25 +66,44 @@ $(function () {
     );
 });
 
-
 $('#startDate').datetimepicker({
     timepicker: false,
-    format: 'Y-m-d'
+    format: 'Y-m-d',
+    onShow:function (ct){
+        this.setOptions({
+            maxDate:$('#endDate').val()?$('#endDate').val():false
+        })
+    }
 });
 $('#endDate').datetimepicker({
     timepicker: false,
-    format: 'Y-m-d'
+    format: 'Y-m-d',
+    onShow:function (ct){
+        this.setOptions({
+            minDate:$('#startDate').val()?$('#startDate').val():false
+        })
+    }
 });
 $('#startTime').datetimepicker({
     datepicker:false,
-    format: 'H:m'
+    format: 'H:i',
+    onShow:function (ct){
+        this.setOptions({
+            maxTime:$('#endTime').val()?$('#endTime').val():false
+        })
+    }
 })
 $('#endTime').datetimepicker({
     datepicker: false,
-    format: 'H:m'
+    format: 'H:i',
+    onShow:function (ct){
+        this.setOptions({
+            minTime:$('#startTime').val()?$('#startTime').val():false
+        })
+    }
 })
 
 $('#dateTime').datetimepicker({
-    format:'Y-m-d H:m'
+    format: 'Y-m-d H:i'
 })
 

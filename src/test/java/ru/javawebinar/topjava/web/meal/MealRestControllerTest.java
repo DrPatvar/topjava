@@ -19,7 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
-import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
@@ -38,6 +39,13 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_MATCHER.contentJson(meal1));
+    }
+
+    @Test()
+    void getNotAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
