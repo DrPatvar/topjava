@@ -49,7 +49,6 @@ public class ProfileUIController extends AbstractUserController {
     public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
         if (result.hasErrors()) {
             model.addAttribute("register", true);
-            model.addAttribute("error", "");
             return "profile";
         }
         try {

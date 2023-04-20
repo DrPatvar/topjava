@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,9 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -33,7 +36,7 @@ public class ExceptionInfoHandler {
     private final static String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exist";
     private final static String EXCEPTION_DUPLICATE_DATETIME = "Date time with input already exist";
 
-    private static Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
+    private final static Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
             "meal_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME
     );
@@ -44,15 +47,17 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(NotFoundException.class)
     public ErrorInfo notFoundError(HttpServletRequest req, NotFoundException e) {
-        return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND);
+        String errorMsg = e.getMessage();
+        return logAndGetErrorInfo(req, e, false, errorMsg);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(BindException.class)
     public ErrorInfo notValid(HttpServletRequest req, BindException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        ResponseEntity<String> response = ValidationUtil.getErrorResponse(bindingResult);
-        return logAndGetErrorInfo(req, e, VALIDATION_ERROR, response.toString());
+             String errorMsg = e.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.joining("<br>"));
+        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, errorMsg);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
@@ -63,7 +68,7 @@ public class ExceptionInfoHandler {
             String lowerCaseMsg = rootMsg.toLowerCase();
             for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()){
                 if (lowerCaseMsg.contains(entry.getKey())){
-                    return logAndGetErrorInfo(req, e,  VALIDATION_ERROR, entry.getValue().toString());
+                    return logAndGetErrorInfo(req, e, false,  VALIDATION_ERROR, entry.getValue());
                 }
             }
         }
@@ -93,8 +98,22 @@ public class ExceptionInfoHandler {
         return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
     }
 
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, ErrorType errorType, String msq) {
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String msq) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
+        if (logException) {
+            log.error(errorType + " at request " + req.getRequestURL(), rootCause);
+        } else {
+            log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
+        }
         return new ErrorInfo(req.getRequestURL(), errorType, msq);
+    }
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, String msq) {
+        Throwable rootCause = ValidationUtil.getRootCause(e);
+        if (logException) {
+            log.error(" at request " + req.getRequestURL(), rootCause);
+        } else {
+            log.warn("{} at request  {}: {}",req.getRequestURL(), rootCause.toString());
+        }
+        return new ErrorInfo(req.getRequestURL(), msq);
     }
 }

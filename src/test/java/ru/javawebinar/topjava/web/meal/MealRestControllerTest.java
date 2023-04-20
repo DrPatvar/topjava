@@ -59,7 +59,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void invalidUpdate()throws  Exception{
-        Meal invalid = meal1;
+        Meal invalid = getUpdated();
         invalid.setDateTime(null);
         invalid.setDescription(null);
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
